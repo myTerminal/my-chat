@@ -17,6 +17,10 @@ app.get("/", function ($) {
     $.end(fs.readFileSync(app.path + "/public/index.html", "utf8"));
 });
 
+app.get("/configs", function ($) {
+    $.json(configs);
+});
+
 var wss = new (require("ws")).Server({
     perMessageDeflate: false,
     port: configs["server-port"]

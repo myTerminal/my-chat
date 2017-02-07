@@ -1,4 +1,4 @@
-/* global angular WebSocket */
+/* global angular WebSocket $ */
 
 var myChat = angular.module("myChat", ["ui.router"]);
 
@@ -38,8 +38,9 @@ myChat.controller("loginController",
 myChat.controller("chatController",
                   ["$scope",
                    "$rootScope",
+                   "$http",
                    "$stateParams",
-                   function ($scope, $rootScope, $stateParams) {
+                   function ($scope, $rootScope, $http, $stateParams) {
                        $rootScope.username = $stateParams.username;
 
                        $scope.showUser = function (username) {
@@ -55,81 +56,90 @@ myChat.controller("chatController",
                            user.unread = 0;
                        };
 
-                       var ws = new WebSocket("ws://localhost:8090");
+                       $http.get("configs")
+                           .then(function (data) {
+                               $scope.configs = data.data;
 
-                       ws.onopen = function () {
-                           ws.send(JSON.stringify({
-                               type: "IDENTIFY",
-                               username: $rootScope.username
-                           }));
-                       };
+                               $rootScope.ws = new WebSocket("ws://" +
+                                                             $scope.configs["domain"] +
+                                                             ":" +
+                                                             $scope.configs["server-port"]);
 
-                       ws.onmessage = function (message) {
-                           var receivedMessage = JSON.parse(message.data);
+                               $rootScope.ws.onopen = function () {
+                                   $rootScope.ws.send(JSON.stringify({
+                                       type: "IDENTIFY",
+                                       username: $rootScope.username
+                                   }));
+                               };
 
-                           switch (receivedMessage.type) {
-                           case "USERLIST":
-                               $rootScope.users = receivedMessage.users.map(function (u) {
-                                   return {
-                                       username: u,
-                                       isVisible: false,
-                                       messages: [],
-                                       unread: 0
-                                   };
-                               });
+                               $rootScope.ws.onmessage = function (message) {
+                                   var receivedMessage = JSON.parse(message.data);
 
-                               $scope.$apply();
+                                   switch (receivedMessage.type) {
+                                   case "USERLIST":
+                                       $rootScope.users = receivedMessage.users.map(function (u) {
+                                           return {
+                                               username: u,
+                                               isVisible: false,
+                                               messages: [],
+                                               unread: 0
+                                           };
+                                       });
 
-                               break;
+                                       $scope.$apply();
 
-                           case "USERENTERED":
-                               $rootScope.users.push({
-                                   username: receivedMessage.username,
-                                   isVisible: false,
-                                   messages: [],
-                                   unread: 0
-                               });
+                                       break;
 
-                               $scope.$apply();
+                                   case "USERENTERED":
+                                       $rootScope.users.push({
+                                           username: receivedMessage.username,
+                                           isVisible: false,
+                                           messages: [],
+                                           unread: 0
+                                       });
 
-                               break;
+                                       $scope.$apply();
 
-                           case "USERLEFT":
-                               var user = $rootScope.users.filter(function (u) {
-                                   return u.username === receivedMessage.username;
-                               });
+                                       break;
 
-                               $rootScope.users.splice($rootScope.users.indexOf(user));
-                               $scope.$apply();
+                                   case "USERLEFT":
+                                       var user = $rootScope.users.filter(function (u) {
+                                           return u.username === receivedMessage.username;
+                                       });
 
-                               break;
+                                       $rootScope.users.splice($rootScope.users.indexOf(user));
+                                       $scope.$apply();
 
-                           case "MESSAGE":
-                               var sender = $rootScope.users.filter(function (u) {
-                                   return u.username === receivedMessage.fromUsername;
-                               })[0];
+                                       break;
 
-                               sender.messages.push({
-                                   fromUsername: receivedMessage.fromUsername,
-                                   messageText: receivedMessage.messageText
-                               });
+                                   case "MESSAGE":
+                                       var sender = $rootScope.users.filter(function (u) {
+                                           return u.username === receivedMessage.fromUsername;
+                                       })[0];
 
-                               sender.unread++;
-                               $scope.$apply();
+                                       sender.messages.push({
+                                           fromUsername: receivedMessage.fromUsername,
+                                           messageText: receivedMessage.messageText
+                                       });
 
-                               break;
+                                       sender.unread++;
+                                       $scope.$apply();
 
-                           default:
-                               // Do nothing
-                           }
-                       };
+                                       break;
 
-                       ws.onclose = function () {
-                           $("#errorModal").modal("show");
-                       };
+                                   default:
+                                       // Do nothing
+                                   }
+                               };
+
+                               $rootScope.ws.onclose = function () {
+                                   $("#errorModal").modal("show");
+                               };
+
+                           });
 
                        $scope.sendMessage = function (targetUsername, messageText) {
-                           ws.send(JSON.stringify({
+                           $rootScope.ws.send(JSON.stringify({
                                type: "MESSAGE",
                                targetUsername: targetUsername,
                                messageText: messageText
@@ -146,6 +156,6 @@ myChat.controller("chatController",
                        };
 
                        $scope.$on('$destroy', function () {
-                           ws.close();
+                           $rootScope.ws.close();
                        });
                    }]);
