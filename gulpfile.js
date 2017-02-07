@@ -10,7 +10,7 @@ var gulp = require('gulp'),
 
 gulp.task('copy-bootstrap-css', function () {
     return gulp.src([
-        'bower_components/bootstrap/dist/css/bootstrap.min.css',
+        'bower_components/bootstrap/dist/css/bootstrap.min.css'
     ]).pipe(copy('public/styles/vendor/bootstrap/css', {
         prefix: 4
     }));
@@ -18,7 +18,7 @@ gulp.task('copy-bootstrap-css', function () {
 
 gulp.task('copy-bootstrap-fonts', function () {
     return gulp.src([
-        'bower_components/bootstrap/dist/fonts/**/*',
+        'bower_components/bootstrap/dist/fonts/**/*'
     ]).pipe(copy('public/styles/vendor/bootstrap/fonts', {
         prefix: 4
     }));
