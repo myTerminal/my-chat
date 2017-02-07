@@ -1,0 +1,22 @@
+<div class="container">
+    <div class="row">
+        <div class="col-sm-6 col-sm-offset-3 col-md-4 col-md-offset-4">
+            <form class="form-signin">
+                <h2 class="form-signin-heading">
+                    Please identify yourself
+                </h2>
+                <label for="inputUsername" class="sr-only">
+                    Username
+                </label>
+                <input type="text" id="inputUsername"
+                       class="form-control" placeholder="Username"
+                       required autofocus
+                       ng-model="inputUsername">
+                <button class="btn btn-lg btn-primary btn-block" type="submit"
+                        ui-sref="chat({username:inputUsername})">
+                    Login
+                </button>
+            </form>
+        </div>
+    </div>
+</div>

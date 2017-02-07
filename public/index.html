@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html ng-app="myChat">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0" />
+
+        <title>my-chat</title>
+
+        <link type="text/css" rel="stylesheet" href="styles/vendor/bootstrap/css/bootstrap.min.css" />
+        <link type="text/css" rel="stylesheet" href="styles/styles.css" />
+        
+        <script type="text/javascript" src="scripts/vendor.min.js"></script>
+        <script type="text/javascript" src="scripts/app.min.js"></script>
+    </head>
+    <body>
+        <nav class="navbar navbar-inverse navbar-fixed-top">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="#" ng-bind="username || 'my-chat'"></a>
+                </div>
+            </div>
+        </nav>
+        <div id="errorModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="errorModal">
+            <div class="modal-dialog modal-sm" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="gridSystemModalLabel">Connect lost!</h4>
+                    </div>
+                    <div class="modal-body">
+                        <p>
+                            Connection to the server is lost.
+                        </p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="page" ui-view>
+        </div>
+    </body>
+</html>
