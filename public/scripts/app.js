@@ -69,8 +69,6 @@ angular.module("myChat", ["ui.router"])
                                       };
                                   });
 
-                                  $rootScope.$apply();
-
                                   break;
 
                               case "USERENTERED":
@@ -81,8 +79,6 @@ angular.module("myChat", ["ui.router"])
                                       unread: 0
                                   });
 
-                                  $rootScope.$apply();
-
                                   break;
 
                               case "USERLEFT":
@@ -91,7 +87,6 @@ angular.module("myChat", ["ui.router"])
                                   });
 
                                   $rootScope.users.splice($rootScope.users.indexOf(user));
-                                  $rootScope.$apply();
 
                                   break;
 
@@ -106,13 +101,14 @@ angular.module("myChat", ["ui.router"])
                                   });
 
                                   sender.unread++;
-                                  $rootScope.$apply();
 
                                   break;
 
                               default:
                                   // Do nothing
                               }
+
+                              $rootScope.$apply();
                           },
                           onCloseHandler: function () {
                               $("#errorModal").modal("show");
