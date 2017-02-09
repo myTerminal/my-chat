@@ -63,7 +63,7 @@ myChat.controller("chatController",
                                $rootScope.ws = new WebSocket("ws://" +
                                                              $scope.configs["domain"] +
                                                              ":" +
-                                                             $scope.configs["server-port"]);
+                                                             $scope.configs["socket-port"]);
 
                                $rootScope.ws.onopen = function () {
                                    $rootScope.ws.send(JSON.stringify({

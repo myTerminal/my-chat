@@ -1,5 +1,5 @@
 {
     "domain": "localhost",
-    "client-port": "8080",
-    "server-port": "8090"
+    "web-port": "8080",
+    "socket-port": "8090"
 }
