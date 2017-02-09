@@ -13,6 +13,7 @@
                        required autofocus
                        ng-model="inputUsername">
                 <button class="btn btn-lg btn-primary btn-block" type="submit"
+                        ng-disabled="!inputUsername"
                         ui-sref="chat({username:inputUsername})">
                     Login
                 </button>
