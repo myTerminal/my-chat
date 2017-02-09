@@ -1,8 +1,10 @@
 /* global module require */
 
+var ws = require("ws");
+
 module.exports = function (configs) {
     var clients = [],
-        wss = new (require("ws")).Server({
+        wss = new ws.Server({
             perMessageDeflate: false,
             port: configs["socket-port"]
         });
@@ -27,7 +29,7 @@ module.exports = function (configs) {
 
                 currentClient.username = receivedMessage.username;
 
-                console.log("user identified", currentClient.username);
+                console.log("user identified:", currentClient.username);
 
                 currentClient.ws.send(JSON.stringify({
                     type: "USERLIST",
@@ -87,7 +89,7 @@ module.exports = function (configs) {
                 }));
             });
 
-            console.log("connection closed");
+            console.log("connection closed by", currentClient.username);
         });
     });
 

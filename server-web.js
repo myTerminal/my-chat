@@ -1,11 +1,11 @@
 /* global module require */
 
-module.exports = function (configs) {
-    var server = require("diet"),
-        dietStatic = require("diet-static"),
-        app = server(),
-        fs = require("fs");
+var server = require("diet"),
+    dietStatic = require("diet-static"),
+    app = server(),
+    fs = require("fs");
 
+module.exports = function (configs) {
     app.listen(configs["web-port"]);
 
     app.footer(dietStatic({
@@ -21,3 +21,4 @@ module.exports = function (configs) {
         $.json(configs);
     });
 };
+
