@@ -6,7 +6,7 @@ var configs = require("./configs.json"),
     app = server(),
     fs = require("fs");
 
-app.listen("http://" + configs["domain"] + ":" + configs["client-port"]);
+app.listen(configs["client-port"]);
 
 app.footer(dietStatic({
     path: app.path + '/public/'
