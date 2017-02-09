@@ -9,17 +9,92 @@ angular.module("myChat", ["ui.router"])
                  $stateProvider.state("login", {
                      url: "/login",
                      controller: "loginController",
+                     controllerAs: "login",
                      templateUrl: "scripts/views/login.html"
                  }).state("chat", {
                      url: "/chat/:username",
                      controller: "chatController",
+                     controllerAs: "chat",
                      templateUrl: "scripts/views/chat.html"
                  });
              }])
+    .service("messageService",
+             ["$rootScope",
+              function ($rootScope) {
+                  var self = this,
+                      users = [],
+
+                      setUsers = function (collection) {
+                          users = collection.map(function (u) {
+                              return {
+                                  username: u,
+                                  messages: []
+                              };
+                          });
+                          $rootScope.$emit("usersSet", collection);
+                      },
+
+                      getUsers = function () {
+                          return users;
+                      },
+
+                      addUser = function (username) {
+                          users.push({
+                              username: username,
+                              messages: []
+                          });
+                          $rootScope.$emit("userAdded", username);
+                      },
+
+                      removeUser = function (username) {
+                          users = users.filter(function (u) {
+                              return u.username !== username;
+                          });
+                          $rootScope.$emit("userRemoved", username);
+                      },
+
+                      addReceivedMessage = function (message) {
+                          var user = users.filter(function (u) {
+                              return u.username === message.fromUsername;
+                          })[0];
+
+                          user.messages.push(message);
+                          $rootScope.$emit("messageReceived", {
+                              fromUsername: message.fromUsername,
+                              messageText: message.messageText
+                          });
+                      },
+
+                      addSentMessage = function (username, messageText) {
+                          var user = users.filter(function (u) {
+                              return u.username === username;
+                          })[0];
+
+                          user.messages.push({
+                              fromUsername: $rootScope.username,
+                              messageText: messageText
+                          });
+
+                          $rootScope.$emit("messageSent", {
+                              username: username,
+                              messageText: messageText
+                          });
+                      };
+
+                  return {
+                      setUsers: setUsers,
+                      getUsers: getUsers,
+                      addUser: addUser,
+                      removeUser: removeUser,
+                      addReceivedMessage: addReceivedMessage,
+                      addSentMessage: addSentMessage
+                  };
+              }])
     .service("websocketService",
              ["$rootScope",
               "$http",
-              function ($rootScope, $http) {
+              "messageService",
+              function ($rootScope, $http, messageService) {
                   var self = this,
                       socket,
                       username,
@@ -60,48 +135,22 @@ angular.module("myChat", ["ui.router"])
 
                               switch (receivedMessage.type) {
                               case "USERLIST":
-                                  $rootScope.users = receivedMessage.users.map(function (u) {
-                                      return {
-                                          username: u,
-                                          isVisible: false,
-                                          messages: [],
-                                          unread: 0
-                                      };
-                                  });
-
+                                  messageService.setUsers(receivedMessage.users);
                                   break;
 
                               case "USERENTERED":
-                                  $rootScope.users.push({
-                                      username: receivedMessage.username,
-                                      isVisible: false,
-                                      messages: [],
-                                      unread: 0
-                                  });
-
+                                  messageService.addUser(receivedMessage.username);
                                   break;
 
                               case "USERLEFT":
-                                  var user = $rootScope.users.filter(function (u) {
-                                      return u.username === receivedMessage.username;
-                                  });
-
-                                  $rootScope.users.splice($rootScope.users.indexOf(user));
-
+                                  messageService.removeUser(receivedMessage.username);
                                   break;
 
                               case "MESSAGE":
-                                  var sender = $rootScope.users.filter(function (u) {
-                                      return u.username === receivedMessage.fromUsername;
-                                  })[0];
-
-                                  sender.messages.push({
+                                  messageService.addReceivedMessage({
                                       fromUsername: receivedMessage.fromUsername,
                                       messageText: receivedMessage.messageText
                                   });
-
-                                  sender.unread++;
-
                                   break;
 
                               default:
@@ -122,14 +171,7 @@ angular.module("myChat", ["ui.router"])
                               messageText: messageText
                           }));
 
-                          var user = $rootScope.users.filter(function (u) {
-                              return u.username === targetUsername;
-                          })[0];
-
-                          user.messages.push({
-                              fromUsername: username,
-                              messageText: messageText
-                          });
+                          messageService.addSentMessage(targetUsername, messageText);
                       },
 
                       close = function () {
@@ -143,16 +185,6 @@ angular.module("myChat", ["ui.router"])
                       close: close
                   };
               }])
-    .controller("mainController",
-                ["$scope",
-                 "$rootScope",
-                 "$location",
-                 function ($scope, $rootScope, $location) {
-                     $scope.logout = function () {
-                         $rootScope.username = null;
-                         $location.path("login");
-                     };
-                 }])
     .controller("loginController",
                 ["$scope",
                  function ($scope) {
@@ -161,29 +193,89 @@ angular.module("myChat", ["ui.router"])
     .controller("chatController",
                 ["$scope",
                  "$rootScope",
+                 "$location",
                  "$stateParams",
                  "websocketService",
-                 function ($scope, $rootScope, $stateParams, websocketService) {
+                 function ($scope, $rootScope, $location, $stateParams, websocketService) {
+                     var self = this;
+
                      $rootScope.username = $stateParams.username;
+
+                     self.users = [];
+
+                     $rootScope.$on("usersSet", function (e, data) {
+                         self.users = data.map(function (u) {
+                             return {
+                                 username: u,
+                                 isVisible: false,
+                                 messages: [],
+                                 unreadMessageCount: 0
+                             };
+                         });
+                     });
+
+                     $rootScope.$on("userAdded", function (e, username) {
+                         self.users.push({
+                             username: username,
+                             messages: [],
+                             isVisible: false,
+                             unreadMessageCount: 0
+                         });
+                     });
+
+                     $rootScope.$on("userRemoved", function (e, username) {
+                         self.users = self.users.filter(function (u) {
+                             return u.username !== username;
+                         });
+                     });
+
+                     $rootScope.$on("messageReceived", function (e, data) {
+                         var user = self.users.filter(function (u) {
+                             return u.username === data.fromUsername;
+                         })[0];
+
+                         user.messages.push({
+                             fromUsername: data.fromUsername,
+                             messageText: data.messageText
+                         });
+
+                         user.unreadMessageCount++;
+                     });
+
+                     $rootScope.$on("messageSent", function (e, data) {
+                         var user = self.users.filter(function (u) {
+                             return u.username === data.username;
+                         })[0];
+
+                         user.messages.push({
+                             fromUsername: $rootScope.username,
+                             messageText: data.messageText
+                         });
+                     });
 
                      websocketService.setUsername($rootScope.username);
                      websocketService.open();
 
-                     $scope.showUser = function (username) {
-                         $rootScope.users.forEach(function (u) {
+                     this.showUser = function (username) {
+                         self.users.forEach(function (u) {
                              u.isVisible = false;
                          });
 
-                         var user = $rootScope.users.filter(function (u) {
+                         var user = self.users.filter(function (u) {
                              return u.username === username;
                          })[0];
 
                          user.isVisible = true;
-                         user.unread = 0;
+                         user.unreadMessageCount = 0;
                      };
 
-                     $scope.sendMessage = function (targetUsername, messageText) {
+                     this.sendMessage = function (targetUsername, messageText) {
                          websocketService.sendMessage(targetUsername, messageText);
+                     };
+
+                     this.logout = function () {
+                         $rootScope.username = null;
+                         $location.path("login");
                      };
 
                      $scope.$on('$destroy', function () {

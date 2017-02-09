@@ -1,27 +1,27 @@
-<div class="container-fluid" ng-controller="mainController">
+<div class="container-fluid">
     <div class="row">
         <div class="col-sm-3 sidebar">
             <ul class="nav nav-sidebar">
-                <li ng-repeat="user in users"
-                    ng-class="{ 'marked': user.unread > 0 }">
-                    <a href="" ng-click="showUser(user.username)">
+                <li ng-repeat="user in chat.users"
+                    ng-class="{ 'marked': user.unreadMessageCount > 0 }">
+                    <a href="" ng-click="chat.showUser(user.username)">
                         {{ user.username }}
                         <span class="badge"
-                              ng-show="user.unread"
-                              ng-bind="user.unread"></span>
+                              ng-show="user.unreadMessageCount"
+                              ng-bind="user.unreadMessageCount"></span>
                     </a>
                 </li>
             </ul>
             <ul class="nav nav-sidebar">
                 <li>
-                    <a class="btn btn-danger" ng-click="logout()">
+                    <a class="btn btn-danger" ng-click="chat.logout()">
                         Logout
                     </a>
                 </li>
             </ul>
         </div>
 
-        <div class="col-sm-9 sidebar" ng-show="!users.length">
+        <div class="col-sm-9 sidebar" ng-show="!chat.users.length">
             <div class="jumbotron">
                 <h1>No one here!</h1>
                 <p>There are no users online at the moment.</p>
@@ -29,7 +29,7 @@
             </div>
         </div>
         
-        <div class="col-sm-9 sidebar" ng-repeat="user in users" ng-show="user.isVisible">
+        <div class="col-sm-9 sidebar" ng-repeat="user in chat.users" ng-show="user.isVisible">
             <ul class="list-group">
                 <li class="list-group-item" ng-repeat="message in user.messages"
                     ng-class="{ 'right': message.fromUsername === username }"
@@ -40,9 +40,9 @@
                 <div class="form-group">
                     <input type="text" class="form-control"
                            id="inputMessage" placeholder="Type your message here..."
-                           ng-model="inputMessage" autocomplete="off">
+                           ng-model="chat.inputMessage" autocomplete="off">
                 </div>
-                <button type="submit" class="btn btn-default" ng-click="sendMessage(user.username, inputMessage); inputMessage='';">
+                <button type="submit" class="btn btn-default" ng-click="chat.sendMessage(user.username, chat.inputMessage); chat.inputMessage='';">
                     Send
                 </button>
             </form>

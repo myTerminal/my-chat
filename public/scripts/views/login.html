@@ -11,10 +11,10 @@
                 <input type="text" id="inputUsername"
                        class="form-control" placeholder="Username"
                        required autofocus
-                       ng-model="inputUsername">
+                       ng-model="login.inputUsername">
                 <button class="btn btn-lg btn-primary btn-block" type="submit"
-                        ng-disabled="!inputUsername"
-                        ui-sref="chat({username:inputUsername})">
+                        ng-disabled="!login.inputUsername"
+                        ui-sref="chat({username:login.inputUsername})">
                     Login
                 </button>
             </form>
