@@ -2,25 +2,29 @@
 
 angular.module("myChat", [
     "ui.router",
-    "myChatServices.websocket",
-    "myChatServices.message"
-]).config(["$stateProvider",
-           "$urlRouterProvider",
-           function ($stateProvider, $urlRouterProvider) {
-               $urlRouterProvider.otherwise("/login");
-               
-               $stateProvider.state("login", {
-                   url: "/login",
-                   controller: "loginController",
-                   controllerAs: "login",
-                   templateUrl: "scripts/views/login.html"
-               }).state("chat", {
-                   url: "/chat/:username",
-                   controller: "chatController",
-                   controllerAs: "chat",
-                   templateUrl: "scripts/views/chat.html"
-               });
-           }])
+    "myChatServices"
+]);
+
+angular.module("myChatServices", []);
+
+angular.module("myChat")
+    .config(["$stateProvider",
+             "$urlRouterProvider",
+             function ($stateProvider, $urlRouterProvider) {
+                 $urlRouterProvider.otherwise("/login");
+                 
+                 $stateProvider.state("login", {
+                     url: "/login",
+                     controller: "loginController",
+                     controllerAs: "login",
+                     templateUrl: "scripts/views/login.html"
+                 }).state("chat", {
+                     url: "/chat/:username",
+                     controller: "chatController",
+                     controllerAs: "chat",
+                     templateUrl: "scripts/views/chat.html"
+                 });
+             }])
     .controller("loginController",
                 ["$scope",
                  function ($scope) {

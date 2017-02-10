@@ -1,6 +1,7 @@
 /* global require */
 
 var gulp = require('gulp'),
+    streamqueue = require('streamqueue'),
     watch = require ('gulp-watch'),
     copy = require('gulp-copy'),
     concat = require('gulp-concat'),
@@ -41,19 +42,21 @@ gulp.task('scripts-vendor', function () {
 });
 
 gulp.task('scripts', function () {
-    return gulp.src([
-        'public/scripts/services/*.js',
-        'public/scripts/app.js'
-    ]).pipe(concat('app.min.js')).
+    return streamqueue(
+        { objectMode: true },
+        gulp.src('public/scripts/app.js'),
+        gulp.src('public/scripts/services/*.js')
+    ).pipe(concat('app.min.js')).
         pipe(uglify()).
         pipe(gulp.dest('public/scripts'));
 });
 
 gulp.task('scripts-debug', function () {
-    return gulp.src([
-        'public/scripts/services/*.js',
-        'public/scripts/app.js'
-    ]).pipe(concat('app.min.js')).
+    return streamqueue(
+        { objectMode: true },
+        gulp.src('public/scripts/app.js'),
+        gulp.src('public/scripts/services/*.js')
+    ).pipe(concat('app.min.js')).
         pipe(gulp.dest('public/scripts'));
 });
 

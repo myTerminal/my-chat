@@ -31,6 +31,7 @@
     "gulp-copy": "^1.0.0",
     "gulp-less": "^3.3.0",
     "gulp-uglify": "^2.0.0",
-    "gulp-watch": "^4.3.11"
+    "gulp-watch": "^4.3.11",
+    "streamqueue": "^1.1.1"
   }
 }

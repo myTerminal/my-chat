@@ -1,6 +1,6 @@
 /* global angular WebSocket $ */
 
-angular.module("myChatServices.websocket", [])
+angular.module("myChatServices")
     .service("websocketService",
              ["$rootScope",
               "$http",

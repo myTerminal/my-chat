@@ -1,6 +1,6 @@
 /* global angular */
 
-angular.module("myChatServices.message", [])
+angular.module("myChatServices")
     .service("messageService",
              ["$rootScope",
               function ($rootScope) {
