@@ -7,7 +7,7 @@
     "install": "node installer.js",
     "postinstall": "bower cache clean && bower install && gulp",
     "develop": "gulp develop",
-    "start": "node index.js"
+    "start": "nodemon index.js"
   },
   "repository": {
     "type": "git",
