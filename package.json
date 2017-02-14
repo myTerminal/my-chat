@@ -13,6 +13,10 @@
     "type": "git",
     "url": "git@github.com:myTerminal/my-chat.git"
   },
+  "bugs": {
+    "url": "https://github.com/myTerminal/my-chat/issues"
+  },
+  "homepage": "https://github.com/myTerminal/my-chat#readme",
   "keywords": [
     "chat"
   ],
