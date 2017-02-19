@@ -4,7 +4,8 @@
   "description": "A simple chat application",
   "main": "index.js",
   "scripts": {
-    "install": "node installer.js",
+    "install-globals": "npm install -g gulp-cli bower nodemon",
+    "install": "npm run install-globals",
     "postinstall": "bower cache clean && bower install && gulp",
     "develop": "gulp develop",
     "start": "nodemon index.js"
@@ -25,7 +26,6 @@
   "dependencies": {
     "diet": "^0.10.8",
     "diet-static": "^2.2.0",
-    "package-script": "0.0.8",
     "ws": "^2.0.2"
   },
   "devDependencies": {
