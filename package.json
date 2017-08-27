@@ -4,11 +4,11 @@
   "description": "A simple chat application",
   "main": "index.js",
   "scripts": {
-    "install-globals": "npm install -g gulp-cli bower nodemon",
-    "install": "npm run install-globals",
-    "postinstall": "bower cache clean && bower install && gulp",
+    "bower": "bower",
+    "gulp": "gulp",
+    "get-vendors": "bower cache clean && bower install && gulp",
     "develop": "gulp develop",
-    "start": "nodemon index.js"
+    "start": "node index.js"
   },
   "repository": {
     "type": "git",
@@ -24,18 +24,19 @@
   "author": "Mohammed Ismail Ansari <team.terminal@gmail.com>",
   "license": "GPL-3.0",
   "dependencies": {
-    "diet": "^0.10.8",
-    "diet-static": "^2.2.0",
-    "ws": "^2.0.2"
+    "diet": "0.16.0",
+    "diet-static": "2.2.0",
+    "ws": "3.1.0"
   },
   "devDependencies": {
-    "gulp": "^3.9.1",
-    "gulp-cleancss": "^0.2.2",
-    "gulp-concat": "^2.6.1",
-    "gulp-copy": "^1.0.0",
-    "gulp-less": "^3.3.0",
-    "gulp-uglify": "^2.0.0",
-    "gulp-watch": "^4.3.11",
-    "streamqueue": "^1.1.1"
+    "bower": "1.8.0",
+    "gulp": "3.9.1",
+    "gulp-cleancss": "0.2.2",
+    "gulp-concat": "2.6.1",
+    "gulp-copy": "1.0.1",
+    "gulp-less": "3.3.2",
+    "gulp-uglify": "3.0.0",
+    "gulp-watch": "4.3.11",
+    "streamqueue": "1.1.1"
   }
 }
