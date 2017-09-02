@@ -36,14 +36,5 @@ jspm_packages
 # Optional REPL history
 .node_repl_history
 
-# Bower components
-bower_components
-
-# Bootstrap CSS
-public/styles/vendor
-
-# Generated CSS
-public/styles/*.css
-
-# Uglified JavaScript
-public/scripts/*.min.js
+# Web directory
+public

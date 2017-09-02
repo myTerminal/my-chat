@@ -2,5 +2,5 @@
 
 var configs = require("./configs.json");
 
-require("./server-web")(configs);
-require("./server-socket")(configs);
+require("./src/server/server-web")(configs);
+require("./src/server/server-socket")(configs);
