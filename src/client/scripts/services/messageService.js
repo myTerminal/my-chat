@@ -7,12 +7,10 @@ module.exports = [
             users = [],
 
             setUsers = function (collection) {
-                users = collection.map(function (u) {
-                    return {
-                        username: u,
-                        messages: []
-                    };
-                });
+                users = collection.map(u => ({
+                    username: u,
+                    messages: []
+                }));
                 $rootScope.$emit("usersSet", collection);
             },
 
@@ -29,16 +27,12 @@ module.exports = [
             },
 
             removeUser = function (username) {
-                users = users.filter(function (u) {
-                    return u.username !== username;
-                });
+                users = users.filter(u => u.username !== username);
                 $rootScope.$emit("userRemoved", username);
             },
 
             addReceivedMessage = function (message) {
-                var user = users.filter(function (u) {
-                    return u.username === message.fromUsername;
-                })[0];
+                var user = users.filter(u => u.username === message.fromUsername)[0];
 
                 user.messages.push(message);
                 $rootScope.$emit("messageReceived", {
@@ -48,9 +42,7 @@ module.exports = [
             },
 
             addSentMessage = function (username, messageText) {
-                var user = users.filter(function (u) {
-                    return u.username === username;
-                })[0];
+                var user = users.filter(u => u.username === username)[0];
 
                 user.messages.push({
                     fromUsername: $rootScope.username,

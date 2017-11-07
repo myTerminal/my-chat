@@ -14,14 +14,12 @@ module.exports = [
         self.users = [];
 
         $rootScope.$on("usersSet", function (e, data) {
-            self.users = data.map(function (u) {
-                return {
-                    username: u,
-                    isVisible: false,
-                    messages: [],
-                    unreadMessageCount: 0
-                };
-            });
+            self.users = data.map(u => ({
+                username: u,
+                isVisible: false,
+                messages: [],
+                unreadMessageCount: 0
+            }));
         });
 
         $rootScope.$on("userAdded", function (e, username) {
@@ -34,15 +32,11 @@ module.exports = [
         });
 
         $rootScope.$on("userRemoved", function (e, username) {
-            self.users = self.users.filter(function (u) {
-                return u.username !== username;
-            });
+            self.users = self.users.filter(u => u.username !== username);
         });
 
         $rootScope.$on("messageReceived", function (e, data) {
-            var user = self.users.filter(function (u) {
-                return u.username === data.fromUsername;
-            })[0];
+            var user = self.users.filter(u => u.username === data.fromUsername)[0];
 
             user.messages.push({
                 fromUsername: data.fromUsername,
@@ -53,9 +47,7 @@ module.exports = [
         });
 
         $rootScope.$on("messageSent", function (e, data) {
-            var user = self.users.filter(function (u) {
-                return u.username === data.username;
-            })[0];
+            var user = self.users.filter(u => u.username === data.username)[0];
 
             user.messages.push({
                 fromUsername: $rootScope.username,
@@ -67,13 +59,9 @@ module.exports = [
         websocketService.open();
 
         this.showUser = function (username) {
-            self.users.forEach(function (u) {
-                u.isVisible = false;
-            });
+            self.users.forEach(u => u.isVisible = false);
 
-            var user = self.users.filter(function (u) {
-                return u.username === username;
-            })[0];
+            var user = self.users.filter(u => u.username === username)[0];
 
             user.isVisible = true;
             user.unreadMessageCount = 0;

@@ -70,8 +70,7 @@ gulp.task('scripts-debug', function () {
     return browserify({
         entries: 'src/client/scripts/app.js',
         debug: true
-    })
-        .transform("babelify", { presets: ["es2015"] })
+    }).transform("babelify", { presets: ["es2015"] })
         .bundle()
         .pipe(source('scripts.js'))
         .pipe(buffer())
@@ -82,8 +81,7 @@ gulp.task('scripts', function () {
     return browserify({
         entries: 'src/client/scripts/app.js',
         debug: true
-    })
-        .transform("babelify", { presets: ["es2015"] })
+    }).transform("babelify", { presets: ["es2015"] })
         .bundle()
         .pipe(source('scripts.js'))
         .pipe(buffer())

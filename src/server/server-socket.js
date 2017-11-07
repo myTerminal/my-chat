@@ -23,9 +23,7 @@ module.exports = function (configs) {
 
             switch (receivedMessage.type) {
             case "IDENTIFY":
-                currentClient = clients.filter(function (c) {
-                    return c.ws === self;
-                })[0];
+                currentClient = clients.filter(c => c.ws === self)[0];
 
                 currentClient.username = receivedMessage.username;
 
@@ -33,32 +31,21 @@ module.exports = function (configs) {
 
                 currentClient.ws.send(JSON.stringify({
                     type: "USERLIST",
-                    users: clients.filter(function (c) {
-                        return c.ws !== self;
-                    }).map(function (c) {
-                        return c.username;
-                    })
+                    users: clients.filter(c => c.ws !== self).map(c => c.username)
                 }));
 
-                clients.filter(function (c) {
-                    return c.ws !== self;
-                }).forEach(function (c) {
-                    c.ws.send(JSON.stringify({
+                clients.filter(c => c.ws !== self)
+                    .forEach(c => c.ws.send(JSON.stringify({
                         type: "USERENTERED",
                         username: currentClient.username
-                    }));
-                });
+                    })));
 
                 break;
 
             case "MESSAGE":
-                currentClient = clients.filter(function (c) {
-                    return c.ws === self;
-                })[0];
+                currentClient = clients.filter(c => c.ws === self)[0];
 
-                targetClient = clients.filter(function (c) {
-                    return c.username === receivedMessage.targetUsername;
-                })[0];
+                targetClient = clients.filter(c => c.username === receivedMessage.targetUsername)[0];
 
                 targetClient.ws.send(JSON.stringify({
                     type: "MESSAGE",
@@ -75,19 +62,15 @@ module.exports = function (configs) {
 
         ws.on("close", function () {
             var self = this,
-                currentClient = clients.filter(function (c) {
-                    return c.ws === self;
-                })[0],
+                currentClient = clients.filter(c => c.ws === self)[0],
                 index = clients.indexOf(currentClient);
 
             clients.splice(index, 1);
 
-            clients.forEach(function (c) {
-                c.ws.send(JSON.stringify({
-                    type: "USERLEFT",
-                    username: currentClient.username
-                }));
-            });
+            clients.forEach(c => c.ws.send(JSON.stringify({
+                type: "USERLEFT",
+                username: currentClient.username
+            })));
 
             console.log("connection closed by", currentClient.username);
         });
