@@ -24,7 +24,7 @@
   "dependencies": {
     "angular": "1.6.6",
     "angular-ui-router": "1.0.3",
-    "bootstrap": "3.3.7",
+    "bootstrap": "3.4.1",
     "diet": "0.16.0",
     "diet-static": "2.2.0",
     "jquery": "3.2.1",
