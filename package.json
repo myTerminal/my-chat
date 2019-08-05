@@ -20,7 +20,7 @@
     "chat"
   ],
   "author": "Mohammed Ismail Ansari <team.terminal@gmail.com>",
-  "license": "GPL-3.0",
+  "license": "CC-BY-NC-SA-4.0",
   "dependencies": {
     "angular": "1.6.6",
     "angular-ui-router": "1.0.3",
